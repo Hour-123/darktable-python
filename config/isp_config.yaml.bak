@@ -1,0 +1,52 @@
+# -------------------- ISP Module Enable/Disable --------------------
+enable:                
+  DPC: True # dead pixel correction
+  # LCS: False # lens shading correction
+  BLC: True # black level correction
+  # AAF: False # adaptive area filter
+  AWB: True # auto white balance
+  # BNR: False # bad pixel replacement
+  CFA: True # color filter array
+  CCM: True # color correction matrix
+  # GTM: True # gamma transfer function
+  # GMC: True # green chroma noise correction
+  # R2Y: True # raw to yuv
+  # CNR: False # color noise reduction
+  # EE:  False # edge enhancement
+  # BCC: True # black color correction
+  # HSC: False # histogram stretch correction
+  # Y2R: True # yuv to raw
+
+# ------------------- Model Params -------------------
+RAW_img_path: 'test_images/sample4.dng' # RAW image path， please change to your own path
+RAW_Height: ~
+RAW_Width: ~
+white_level: 4095
+bayer_pattern: RGGB
+
+bad_pixel_threshold: 30
+
+LCS: ~
+
+black_level_r: 256.0
+black_level_gr: 256.0
+black_level_gb: 256.0
+black_level_b: 256.0
+alpha: 1.        
+beta: 1.                  
+
+AAF: ~
+
+r_gain: 2.45         
+b_gain: 3.98      
+
+BNR_method: 'bilateral'
+
+CFA_method: 'opencv'
+
+ccm_matrix:
+    - [1.631906, -0.381807, -0.250099]
+    - [-0.298296, 1.614734, -0.316438]
+    - [0.023770, -0.538501, 1.514732 ]
+
+
