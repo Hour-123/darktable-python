@@ -1,0 +1,8 @@
+# 基础运行依赖
+numpy>=1.24
+opencv-python>=4.8
+rawpy>=0.18
+PyYAML>=6.0
+
+# 可选：用于生成总览图弹窗显示
+matplotlib>=3.8 
