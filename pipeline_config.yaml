@@ -1,0 +1,26 @@
+# 图像处理管线配置文件
+
+# 定义输入和输出文件
+# input_file 路径相对于 darktable_python 目录
+# output_file 路径相对于 darktable_python/output 目录
+input_file: '../database/sample2.dng'
+output_file: 'pipeline_with_filmic_output.jpg'
+
+# 定义处理管线中的各个步骤
+# 处理器将按顺序执行这些模块
+pipeline:
+  # 步骤1: 曝光调整 (通常在 filmicrgb 之前使用，以将中灰色调放置在合适位置)
+  - module: exposure
+    params:
+      exposure_ev: -1.0
+      black_level: 0.0
+
+  # 步骤2: Filmic RGB (取代 tonecurve，进行主色调映射)
+  - module: filmicrgb
+    params:
+      white_point_ev: 3.0
+      black_point_ev: -8.0
+      contrast: 1.2
+      latitude: 0.4
+      # 'luminance' 和 'max_rgb' 是我们当前支持的模式
+      preserve_color: "luminance" 
