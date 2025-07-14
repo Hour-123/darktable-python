@@ -3,24 +3,123 @@
 # 定义输入和输出文件
 # input_file 路径相对于 darktable_python 目录
 # output_file 路径相对于 darktable_python/output 目录
-input_file: '../database/sample2.dng'
-output_file: 'pipeline_with_filmic_output.jpg'
+input_file: '../database/sample1.dng'
+output_file: 'pipeline_with_watermark_output.jpg'
 
 # 定义处理管线中的各个步骤
 # 处理器将按顺序执行这些模块
 pipeline:
   # 步骤1: 曝光调整 (通常在 filmicrgb 之前使用，以将中灰色调放置在合适位置)
   - module: exposure
+    enabled: true
     params:
+      # 曝光补偿 (单位: EV)
       exposure_ev: -1.0
       black_level: 0.0
 
   # 步骤2: Filmic RGB (取代 tonecurve，进行主色调映射)
   - module: filmicrgb
+    enabled: true
     params:
+      # 场景中最亮部分的EV值
       white_point_ev: 3.0
       black_point_ev: -8.0
       contrast: 1.2
       latitude: 0.4
       # 'luminance' 和 'max_rgb' 是我们当前支持的模式
-      preserve_color: "luminance" 
+      preserve_color: "luminance"
+
+  # 步骤3: 色彩平衡 (color balance rgb) - 暂时禁用，仍需要改进
+  - module: colorbalancergb
+    enabled: false
+    params:
+      # --- 核心色彩分级 (Creative Grading) ---
+      # 通过调整指定区域的色相(H)、色度(C)、亮度(Y)来进行艺术调色
+      # H: 色相 (0-360度), C: 色度/饱和度 (0.0 - ~0.5), Y: 亮度/曝光补偿 (EV, -1.0 - 1.0)
+      shadows_H: 0.0    # 阴影色相 (青色/蓝色)
+      shadows_C: 0.05     # 阴影色度
+      shadows_Y: 0.0      # 阴影亮度
+      midtones_H: 0.0     # 中间调色相
+      midtones_C: 0.0     # 中间调色度
+      midtones_Y: 0.0     # 中间调亮度
+      highlights_H: 0.0  # 高光色相 (橙色/黄色)
+      highlights_C: 0.05  # 高光色度
+      highlights_Y: 0.0   # 高光亮度
+
+      # --- 对比度与支点 (Contrast & Fulcrums) ---
+      # 控制画面的整体对比度
+      contrast: 0.05      # 对比度 (建议范围 -0.2 到 0.2)
+      grey_fulcrum: 0.1845  # 对比度支点 (通常无需更改)
+      white_fulcrum: 0.0    # 白色点 (高级参数, 通常无需更改)
+
+      # --- 色彩鲜艳度 (Colorfulness) ---
+      # 调整颜色的强度
+      vibrance: 0.1       # 鲜艳度 (智能饱和度, 推荐)
+      chroma_global: 0.0    # 全局线性色度
+      chroma_shadows: 0.0   # 阴影线性色度
+      chroma_midtones: 0.0  # 中间调线性色度
+      chroma_highlights: 0.0 # 高光线性色度
+
+      # --- 蒙版控制 (Masking Controls) ---
+      # 微调阴影、中间调、高光的分界线
+      mask_grey_fulcrum: 0.1845 # 蒙版灰点 (分界线中心, 0.0-1.0)
+      shadows_weight: 1.0     # 阴影蒙版权重 (过渡区域大小)
+      highlights_weight: 1.0  # 高光蒙版权重 (过渡区域大小)
+
+      # --- 全局调整 (Global adjustments) ---
+      # 这些参数未在上面的例子中使用，但可用于全局调整
+      global_H: 0.0
+      global_C: 0.0
+      global_Y: 0.0
+      hue_angle: 0.0      # 全局色相旋转 
+
+  #--------------------------------
+  # Effects & Filters
+  #--------------------------------
+  # 步骤4: 泛光 - 暂时禁用 （需要改进）
+  - module: bloom
+    enabled: false
+    params:
+      strength: 1.0   # 泛光强度 (0.0 - 1.0)
+      radius: 0.02     # 每一级模糊的半径 (sigma)
+      threshold: 90.0 # 泛光亮度阈值 (0-100), 越高则只有越亮的物体会发光
+      # levels: 5       # 降采样级别, 越多则光晕越柔和、弥散
+
+  # 步骤5: 边框 - 暂时禁用
+  - module: borders
+    enabled: false
+    params:
+      size: 0.05               # 边框大小，相对于图像短边 (0.0 - 1.0)
+      color: [255, 255, 255]         # 边框颜色 [R, G, B]，[0, 0, 0] 为黑色，[255, 255, 255] 为白色
+
+  # 步骤6: 水印
+  - module: watermark
+    enabled: true
+    params:
+      watermark_file: 'darktable_python/assets/logo_Hour.png'
+      scale: 0.15
+      opacity: 0.2 # 水印透明度，0.0-1.0，越大越不透明
+      position: 'bottom-right'
+
+  # 步骤7: 暗角 - 暂时禁用
+  - module: vignette
+    enabled: false
+    params:
+      strength: 0.8  # 暗角强度，0.0-1.0，越大越明显
+      radius: 0.9    # 暗角半径，0.0-1.0，越大越明显
+      softness: 1.0  # 边缘柔和度，0.0-1.0，越大越柔和
+
+  # 步骤7: 胶片颗粒 - 暂时禁用
+  - module: grain
+    enabled: false
+    params:
+      strength: 0.8   # 颗粒强度，0.0-1.0，越大越明显
+      coarseness: 0.8 # 颗粒粗糙度，0.0-1.0，越大越粗糙（噪声团块，黏连在一起）
+
+  #--------------------------------
+  # Color Correction
+  #--------------------------------
+  # 步骤7: 色彩反转 - 暂时禁用
+  - module: invert
+    enabled: false
+    params: {} 

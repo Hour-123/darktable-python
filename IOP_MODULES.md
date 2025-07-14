@@ -11,7 +11,7 @@
 - `basecurve.c`: 模拟相机JPEG效果的基础曲线。
 - `exposure.c`: 曝光补偿。✅
 - `filmic.c`: (已废弃) 旧版的 Filmic 模块。
-- `filmicrgb.c`: **核心模块** - 现代化的 Filmic RGB，用于将高动态范围的场景参考图像映射到显示参考。
+- `filmicrgb.c`: **核心模块** - 现代化的 Filmic RGB，用于将高动态范围的场景参考图像映射到显示参考。✅
 - `globaltonemap.c`: 全局色调映射。
 - `levels.c`: 色阶调整。
 - `negadoctor.c`: 用于处理扫描的胶片负片。
@@ -20,7 +20,7 @@
 - `rgbcurve.c`: RGB 曲线。
 - `sigmoid.c`: 一个替代 Filmic RGB 的色调映射模块。
 - `shadhi.c`: 阴影和高光调整。
-- `tonecurve.c`: 色调曲线。✅
+- `tonecurve.c`: 色调曲线（can be replaced by filmicrgb）。✅
 - `toneequal.c`: 色调均衡器。
 - `zonesystem.c`: 区域系统，类似 Ansel Adams 的分区曝光法。
 
@@ -73,16 +73,16 @@
 
 用于添加艺术效果。
 
-- `bloom.c`: 泛光效果。
+- `bloom.c`: 泛光效果。__in pro__
 - `blurs.c`: 多种模糊效果。
-- `borders.c`: 添加边框。
+- `borders.c`: 添加边框。✅
 - `diffuse.c`: 柔光/扩散效果。
 - `dither.c`: 抖动，用于减少色带。
-- `grain.c`: 模拟胶片颗粒。
+- `grain.c`: 模拟胶片颗粒。✅
 - `highpass.c`: 高通滤波器，常用于锐化。
 - `lowlight.c`: 低光照效果。
 - `soften.c`: 柔化。
-- `vignette.c`: 暗角。
+- `vignette.c`: 暗角。✅
 - `watermark.c`: 添加水印。
 
 ## 5. 几何 (Geometry)
@@ -106,7 +106,7 @@
 - `demosaic.c`: **核心模块** - 去马赛克，将 RAW 数据转换为彩色图像。
 - `finalscale.c`: 管线末端的最终缩放。
 - `gamma.c`: Gamma 调整。
-- `invert.c`: 反相。
+- `invert.c`: 反相。✅
 - `rawprepare.c`: RAW 数据准备。
 - `useless.c`: (调试或模板) 
 

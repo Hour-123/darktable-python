@@ -67,10 +67,20 @@ def run_pipeline(config_path: str):
 
     # 3. Execute Pipeline Steps
     print("3. Executing processing pipeline...")
+    total_steps = len(pipeline_steps)
     for i, step in enumerate(pipeline_steps):
-        module_name = step['module']
+        module_name = step.get('module')
+        if not module_name:
+            print(f"   - WARNING: Step {i+1} is missing 'module' name. Skipping.")
+            continue
+
+        # Check for the 'enabled' switch, default to True if not specified
+        if not step.get('enabled', True):
+            print(f"   - Step {i+1}/{total_steps}: Skipping module '{module_name}' (disabled).")
+            continue
+
         params = step.get('params', {})
-        print(f"   - Step {i+1}/{len(pipeline_steps)}: Applying module '{module_name}' with params {params}")
+        print(f"   - Step {i+1}/{total_steps}: Applying module '{module_name}' with params {params}")
         
         try:
             # Dynamically load the module class
