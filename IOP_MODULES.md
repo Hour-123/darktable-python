@@ -83,7 +83,7 @@
 - `lowlight.c`: 低光照效果。
 - `soften.c`: 柔化。
 - `vignette.c`: 暗角。✅
-- `watermark.c`: 添加水印。
+- `watermark.c`: 添加水印。✅
 
 ## 5. 几何 (Geometry)
 
