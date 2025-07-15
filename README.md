@@ -1,6 +1,6 @@
-# darktable_python (中文版)
+# darktable_python 
 
-本项目是一个基于 Python 的图像处理管线，其灵感来源于现代数字暗房软件（如 darktable）中基于场景参考的工作流。它采用模块化方法，通过配置文件将各种图像操作（IOP）模块链接在一起。
+本项目是一个基于 darktable 的图像处理管线，使用 python 复刻其 iop 模块。它采用模块化方法，通过配置文件将各种图像操作（IOP）模块链接在一起。
 
 ## 功能特性
 
@@ -88,4 +88,6 @@ darktable_python/
     ```bash
     python core/pipeline.py
     ```
-    处理完成的图像将保存在 `output/` 目录中。 
+    处理完成的图像将保存在 `output/` 目录中。
+
+update date: 2025-07-15 
