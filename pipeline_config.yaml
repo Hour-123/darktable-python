@@ -3,8 +3,8 @@
 # 定义输入和输出文件
 # input_file 路径相对于 darktable_python 目录
 # output_file 路径相对于 darktable_python/output 目录
-input_file: '../database/sample1.dng'
-output_file: 'pipeline_with_watermark_output.jpg'
+input_file: '../database/sample2.dng'
+output_file: 'pipeline_with_lowlight_output.jpg'
 
 # 定义处理管线中的各个步骤
 # 处理器将按顺序执行这些模块
@@ -76,7 +76,25 @@ pipeline:
   #--------------------------------
   # Effects & Filters
   #--------------------------------
-  # 步骤4: 泛光 - 暂时禁用 （需要改进）
+  # 柔化效果 - 暂时禁用，使用新的 diffuse 模块
+  - module: soften
+    enabled: false
+    params:
+      size: 40.0       # 模糊半径，控制柔光的扩散范围 (0-100)
+      brightness: 0.6  # 亮度提升，营造发光感 (-2.0 to 2.0)；微小变化就可以产生很大效果
+      saturation: 100.0 # 饱和度提升 (0-100)
+      amount: 65.0     # 最终效果的混合量 (0-100)
+
+  # 扩散/柔光效果，运行时间很慢，需要优化；其功能覆盖 bloom 和 soften 模块
+  - module: diffuse
+    enabled: false
+    params:
+      iterations: 20 # 迭代次数，越大，效果越强
+      speed: 0.5 # 扩散速度，越大，扩散越快；范围：0.0 - 1.0
+      anisotropy: 0.9 # 正数：沿着边缘扩散，负数：垂直于边缘扩散；范围：-1.0 - 1.0
+      edge_sensitivity: 0.02 # 边缘敏感度，越大，边缘越明显；范围：0.0 - 1.0
+
+  # 泛光 - 暂时禁用 （需要改进）
   - module: bloom
     enabled: false
     params:
@@ -85,23 +103,23 @@ pipeline:
       threshold: 90.0 # 泛光亮度阈值 (0-100), 越高则只有越亮的物体会发光
       # levels: 5       # 降采样级别, 越多则光晕越柔和、弥散
 
-  # 步骤5: 边框 - 暂时禁用
+  # 步骤6: 边框 - 暂时禁用
   - module: borders
     enabled: false
     params:
       size: 0.05               # 边框大小，相对于图像短边 (0.0 - 1.0)
       color: [255, 255, 255]         # 边框颜色 [R, G, B]，[0, 0, 0] 为黑色，[255, 255, 255] 为白色
 
-  # 步骤6: 水印
+  # 步骤7: 水印 - 暂时禁用
   - module: watermark
-    enabled: true
+    enabled: false
     params:
       watermark_file: 'darktable_python/assets/logo_Hour.png'
       scale: 0.15
       opacity: 0.2 # 水印透明度，0.0-1.0，越大越不透明
       position: 'bottom-right'
 
-  # 步骤7: 暗角 - 暂时禁用
+  # 步骤8: 暗角 - 暂时禁用
   - module: vignette
     enabled: false
     params:
@@ -109,17 +127,69 @@ pipeline:
       radius: 0.9    # 暗角半径，0.0-1.0，越大越明显
       softness: 1.0  # 边缘柔和度，0.0-1.0，越大越柔和
 
-  # 步骤7: 胶片颗粒 - 暂时禁用
+  # 步骤9: 胶片颗粒 - 暂时禁用
   - module: grain
     enabled: false
     params:
       strength: 0.8   # 颗粒强度，0.0-1.0，越大越明显
       coarseness: 0.8 # 颗粒粗糙度，0.0-1.0，越大越粗糙（噪声团块，黏连在一起）
 
+  # 步骤10: 高通滤波 - 暂时禁用
+  - module: highpass
+    enabled: false
+    params:
+      radius: 10.0 # 半径，决定了细节的粗细程度
+      contrast: 1.0 # 对比度，增强细节
+
+  # 步骤11: 锐化 - 暂时禁用
+  - module: sharpen
+    enabled: false
+    params:
+      radius: 2.0 # 锐化半径，0.0-10.0，越大，锐化线条越粗
+      amount: 5.0 # 锐化量，0.0-5.0，越大，锐化效果越强
+  
+  # 步骤12: 模糊，支持多种模糊类型，包括高斯模糊、镜头模糊、运动模糊
+  - module: blurs
+    enabled: false
+    params:
+      blur_type: 'motion' # 模糊类型，可选：gaussian, lens, motion
+      # 通用参数
+      radius: 10.0 # 模糊半径，0.0-100.0，越大，模糊效果越强
+      # 镜头模糊参数
+      blades: 6 # 镜头模糊的叶片数，3-11
+      concavity: 1.0 # 镜头模糊的凹凸程度，0.0-1.0，越大，凹凸越明显
+      linearity: 1.0 # 镜头模糊的线性程度，0.0-1.0，越大，线性越明显；
+      rotation: 0.0 # 镜头模糊的旋转角度，0.0-360.0，越大，旋转越明显
+      # 运动模糊参数
+      angle: 0.0 # 运动模糊的角度，0.0-360.0，越大，角度越明显
+      curvature: 0.0 # 运动模糊的曲率，0.0-1.0，越大，曲率越明显
+      offset: 0.0 # 运动模糊的偏移量，0.0-1.0，越大，偏移越明显
+
+  # 步骤13: 抖动/色调分离 
+  - module: dither
+    enabled: false
+    params:
+      # method: 'floyd-steinberg' 或 'posterize'，后者运行时间更短，但效果不如前者
+      method: 'posterize'
+      levels: 4 # 量化级别 (例如 2, 4, 8), 数量越少，颜色越少
+
+  # 步骤14: 低光照视觉 (模拟夜视) - 暂时禁用
+  - module: lowlight
+    enabled: true
+    params:
+      blueness: 50.0 # 蓝移程度 (0-100)，值越大，夜视效果越偏蓝
+      # 混合曲线控制点: [[亮度, 权重], ...]
+      # 亮度为0时权重为0，表示在最暗处完全应用夜视效果
+      # 亮度为1时权重为1，表示在最亮处完全保留原色
+      curve_points:
+        - [0.0, 0.0]
+        - [0.5, 0.2]
+        - [1.0, 1.0]
+
   #--------------------------------
   # Color Correction
   #--------------------------------
-  # 步骤7: 色彩反转 - 暂时禁用
+  # 步骤12: 色彩反转 - 暂时禁用
   - module: invert
     enabled: false
     params: {} 

@@ -73,15 +73,16 @@
 
 用于添加艺术效果。
 
-- `bloom.c`: 泛光效果。__in pro__
-- `blurs.c`: 多种模糊效果。
+- `bloom.c`: 泛光效果。✅
+- `blurs.c`: 多种模糊效果。✅
 - `borders.c`: 添加边框。✅
-- `diffuse.c`: 柔光/扩散效果。
-- `dither.c`: 抖动，用于减少色带。
+- `diffuse.c`: 柔光/扩散效果。✅
+- `dither.c`: 抖动，用于减少色带。✅
 - `grain.c`: 模拟胶片颗粒。✅
-- `highpass.c`: 高通滤波器，常用于锐化。
-- `lowlight.c`: 低光照效果。
-- `soften.c`: 柔化。
+- `highpass.c`: 高通滤波器，常用于锐化。✅
+- `sharpen.c`: 锐化。✅
+- `lowlight.c`: 低光照效果。✅
+- `soften.c`: 柔化。✅
 - `vignette.c`: 暗角。✅
 - `watermark.c`: 添加水印。✅
 

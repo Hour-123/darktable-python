@@ -90,4 +90,4 @@ darktable_python/
     ```
     处理完成的图像将保存在 `output/` 目录中。
 
-update date: 2025-07-15
+_update date: 2025-07-15_
