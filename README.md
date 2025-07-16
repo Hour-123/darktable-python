@@ -104,4 +104,4 @@ darktable_python/
     -   查看处理日志。
     -   处理完成后直接预览输出图像。
 
-_update date: 2025-07-15_
+_update date: 2025-07-16_

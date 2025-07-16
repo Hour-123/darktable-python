@@ -6,9 +6,9 @@ import numpy as np
 
 def exposure_v1(image_data: np.ndarray, exposure_ev: float, black_level: float = 0.0) -> np.ndarray:
     """
-    Applies exposure and black level correction.
+    Applies exposure and black level correction based on darktable's C implementation.
 
-    This is a simplified model based on the core principles of the exposure module.
+    This model matches the core principles of the exposure module.
     In a linear color space, exposure compensation is a simple multiplication.
 
     Args:
@@ -25,21 +25,24 @@ def exposure_v1(image_data: np.ndarray, exposure_ev: float, black_level: float =
     if image_data.dtype != np.float32 and image_data.dtype != np.float64:
         raise ValueError("Input image data must be of float type for processing.")
 
-    # The core formula: output = (input + black_offset) * 2^EV
-    # Note: black_level in darktable's UI is a complex percentage. Here we treat it
-    # as a direct linear offset for simplicity in our first version.
-    
-    # 1. Apply black level offset
-    processed_image = image_data + black_level
-    
-    # 2. Calculate the exposure multiplier
-    # The multiplier is 2 to the power of the EV value.
-    multiplier = 2.0 ** exposure_ev
-    
-    # 3. Apply exposure multiplication
-    processed_image = processed_image * multiplier
-    
+    # The C source code's core logic is:
+    # out = (in - black) * scale
+    # where white = exp2(-exposure)
+    # and scale = 1.0 / (white - black)
+
+    white = 2.0 ** (-exposure_ev)
+
+    # Avoid division by zero if white point and black point are the same.
+    if np.isclose(white, black_level):
+        scale = 1.0
+    else:
+        scale = 1.0 / (white - black_level)
+
+    # Apply the formula
+    processed_image = (image_data - black_level) * scale
+
     return processed_image
+
 
 # For future development, we can create a class to hold parameters,
 # similar to how darktable's structs work.
@@ -55,10 +58,23 @@ class Exposure:
     
     def process(self, image_data: np.ndarray) -> np.ndarray:
         """
-        Applies the stored exposure and black level correction.
+        Applies the stored exposure and black level correction,
+        matching the logic from darktable's C source code.
         """
-        # This will call the same core logic.
-        return exposure_v1(image_data, self.exposure_ev, self.black_level)
+        # The C source code's core logic is:
+        # out = (in - black) * scale
+        # where white = exp2(-exposure)
+        # and scale = 1.0 / (white - black)
+
+        white = 2.0 ** (-self.exposure_ev)
+
+        # Avoid division by zero if white point and black point are the same.
+        if np.isclose(white, self.black_level):
+            scale = 1.0
+        else:
+            scale = 1.0 / (white - self.black_level)
+
+        return (image_data - self.black_level) * scale
 
 
 if __name__ == '__main__':

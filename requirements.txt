@@ -7,4 +7,3 @@ numba
 Pillow
 scikit-image
 customtkinter
-tkinter
