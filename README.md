@@ -39,6 +39,9 @@ darktable_python/
 ├── assets/
 │   └── logo.png            # 模块使用的素材 (例如：水印)
 ├── output/                 # 处理后图像的默认输出目录
+├── test_suite/
+│   ├── verify_exposure.py  # `exposure` 模块的验证脚本
+│   └── test_assets/        # 用于验证的图像素材
 ├── utils/
 │   └── watermark_generator.py # 水印生成工具
 ├── gui.py                  # 图形用户界面 (GUI)
@@ -104,4 +107,14 @@ darktable_python/
     -   查看处理日志。
     -   处理完成后直接预览输出图像。
 
-_update date: 2025-07-16_
+5.  **运行验证脚本**
+
+    项目包含一个简单的验证套件，用于将核心模块的输出与 darktable 生成的基准进行比较，以确保结果的一致性。
+
+    要运行 `exposure` 模块的验证，请执行：
+    ```bash
+    python test_suite/verify_exposure.py
+    ```
+    脚本将处理测试图像，并输出一个量化的比较报告 (PSNR 和 SSIM)，以显示 Python 实现与基准之间的匹配程度。
+
+_update date: 2025-07-15_
