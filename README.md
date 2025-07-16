@@ -41,6 +41,7 @@ darktable_python/
 ├── output/                 # 处理后图像的默认输出目录
 ├── utils/
 │   └── watermark_generator.py # 水印生成工具
+├── gui.py                  # 图形用户界面 (GUI)
 ├── pipeline_config.yaml    # 管线配置文件
 ├── requirements.txt        # 项目依赖
 └── README.md
@@ -89,5 +90,18 @@ darktable_python/
     python core/pipeline.py
     ```
     处理完成的图像将保存在 `output/` 目录中。
+
+4.  **运行图形界面 (GUI)**
+
+    除了通过命令行，您还可以使用图形界面来操作处理管线。
+
+    ```bash
+    python gui.py
+    ```
+    这将启动一个交互式窗口，您可以在其中：
+    -   动态选择输入图像。
+    -   实时调整所有模块的参数。
+    -   查看处理日志。
+    -   处理完成后直接预览输出图像。
 
 _update date: 2025-07-15_
