@@ -2,10 +2,15 @@ input_file: ../database/sample1.dng
 output_file: pipeline_with_exposure_output.jpg
 pipeline:
 - module: exposure
+  enabled: false
+  params:
+    exposure_ev: 0.5
+    black_level: 0.01
+- module: whitebalance
   enabled: true
   params:
-    exposure_ev: -1.0
-    black_level: 0.0
+    temp_k: 6502.0
+    tint: 1.0
 - module: filmicrgb
   enabled: false
   params:
